@@ -88,7 +88,7 @@ public class NfcTagListFragment extends RecyclerViewFragment<NfcTagData> {
 	}
 
 	@Override
-	protected void initializeAdapter() {
+	public void initializeAdapter() {
 		List<NfcTagData> items = ProjectManager.getInstance().getCurrentSprite().getNfcTagList();
 		sharedPreferenceDetailsKey = "showDetailsNfcTags";
 		adapter = new NfcTagAdapter(items);

@@ -119,6 +119,8 @@ class ProjectActivity : BaseCastActivity() {
             }
         }
         projectManager.currentProject.checkIfSpriteNameEqualBackground(this)
+
+        ToastUtil.showSuccess(this, "ProjectActivity")
     }
 
     private fun loadFragment(fragmentPosition: Int) {

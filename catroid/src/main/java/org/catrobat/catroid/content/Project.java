@@ -160,6 +160,15 @@ public class Project implements Serializable {
 		return names;
 	}
 
+	public Scene getSceneWithName(String name){
+		for(Scene s : sceneList){
+			if(s.getName().equals(name)){
+				return s;
+			}
+		}
+		return null;
+	}
+
 	public void addScene(Scene scene) {
 		sceneList.add(scene);
 	}

@@ -192,6 +192,8 @@ public class SpriteActivity extends BaseActivity {
 		}
 		loadFragment(this, fragmentPosition);
 		addTabLayout(this, fragmentPosition);
+
+		ToastUtil.showSuccess(this,"SpriteActivity");
 	}
 
 	public String createActionBarTitle() {

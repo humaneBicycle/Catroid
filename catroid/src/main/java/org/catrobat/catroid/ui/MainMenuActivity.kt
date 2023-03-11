@@ -103,6 +103,8 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
         surveyCampaign = Survey(this)
         surveyCampaign?.showSurvey(this)
+
+        ToastUtil.showSuccess(this, "MainMenuActivity")
     }
 
     private fun showTermsOfUseDialog() {

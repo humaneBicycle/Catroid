@@ -27,6 +27,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/undo_project_button"
+        android:title="@string/undo"
+        android:icon="@drawable/icon_undo"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/redo_project_button"
+        android:title="@string/redo"
+        android:icon="@drawable/icon_redo"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/cast_button"
         android:title="@string/cast_button_menu_item_title"
         android:icon="@drawable/ic_cast_white"
