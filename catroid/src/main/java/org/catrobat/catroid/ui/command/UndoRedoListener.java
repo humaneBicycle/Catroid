@@ -23,9 +23,7 @@
 
 package org.catrobat.catroid.ui.command;
 
-public interface Command {
-
-	void execute();
-	void unExecute();
-
+public interface UndoRedoListener {
+	void isUndoAvailable(boolean isUndoAvailable);
+	void isRedoAvailable(boolean isRedoAvailable);
 }

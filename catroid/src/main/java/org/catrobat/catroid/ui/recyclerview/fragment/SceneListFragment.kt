@@ -25,11 +25,11 @@ package org.catrobat.catroid.ui.recyclerview.fragment
 import android.content.Intent
 import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.PluralsRes
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.common.Constants
@@ -37,9 +37,10 @@ import org.catrobat.catroid.common.SharedPreferenceKeys
 import org.catrobat.catroid.content.Scene
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
-import org.catrobat.catroid.ui.command.Command
 import org.catrobat.catroid.ui.UiUtils
+import org.catrobat.catroid.ui.command.CommandManager
 import org.catrobat.catroid.ui.command.RenameCommand
+import org.catrobat.catroid.ui.command.UndoRedoListener
 import org.catrobat.catroid.ui.controller.BackpackListManager
 import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter
 import org.catrobat.catroid.ui.recyclerview.adapter.multiselection.MultiSelectionManager
@@ -48,15 +49,17 @@ import org.catrobat.catroid.ui.recyclerview.controller.SceneController
 import org.catrobat.catroid.utils.ToastUtil
 import org.koin.android.ext.android.inject
 import java.io.IOException
-import java.util.Stack
 
 class SceneListFragment : RecyclerViewFragment<Scene?>(),
-    ProjectLoadListener {
+    ProjectLoadListener, UndoRedoListener {
 
     private val sceneController = SceneController()
     private val projectManager: ProjectManager by inject()
-    private val undoHistory: Stack<Command> = Stack<Command>()
-    private val redoHistory: Stack<Command> = Stack<Command>()
+    private val commandManager:CommandManager=CommandManager()
+
+
+    lateinit var undoButton : MenuItem
+    lateinit var redoButton : MenuItem
 
     override fun onResume() {
         super.onResume()
@@ -67,6 +70,7 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         }
         projectManager.currentlyEditedScene = currentProject.defaultScene
         (requireActivity() as AppCompatActivity).supportActionBar?.title = currentProject.name
+        commandManager.addUndoListener(this)
     }
 
     private fun switchToSpriteListFragment() {
@@ -75,10 +79,21 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
             .commit()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        undoButton=menu.findItem(R.id.undo_project_button)
+        redoButton=menu.findItem(R.id.redo_project_button)
+        undoButton.setEnabled(false)
+        undoButton.icon.alpha=130
+        redoButton.icon.alpha=130
+
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         menu.findItem(R.id.new_group).isVisible = false
         menu.findItem(R.id.new_scene).isVisible = false
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -213,8 +228,7 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
             name,
             projectManager
         )
-        command.renameItem()
-        undoHistory.add(command)
+        commandManager.executeCommand(command)
     }
 
     override fun onItemClick(item: Scene?, selectionManager: MultiSelectionManager?) {
@@ -280,20 +294,32 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     }
 
     private fun handleUndo(undoMenuItem : MenuItem){
-        undoHistory.peek().unExecute()
-        undoHistory.pop()
-        if(undoHistory.isEmpty()){
-            undoMenuItem.setEnabled(false)
+        ToastUtil.showSuccess(context,"undo click")
+        commandManager.undo()
+    }
+    private fun handleRedo(undoMenuItem : MenuItem){
+        commandManager.redo()
+    }
+
+    override fun isUndoAvailable(isUndoAvailable: Boolean) {
+        undoButton.setEnabled(isUndoAvailable)
+        if(isUndoAvailable){
+            undoButton.icon.alpha=255
+
+        }else{
+            undoButton.icon.alpha=130
+
         }
     }
 
+    override fun isRedoAvailable(isRedoAvailable: Boolean) {
+        redoButton.setEnabled(isRedoAvailable)
+        if(isRedoAvailable){
+            redoButton.icon.alpha=255
 
-    private fun handleRedo(redoMenuItem : MenuItem){
+        }else{
+            redoButton.icon.alpha=130
 
-
-        if(redoHistory.isEmpty()){
-            redoMenuItem.setEnabled(false)
         }
     }
-
 }

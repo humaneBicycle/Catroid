@@ -56,28 +56,26 @@ public class RenameCommand implements Command {
 
 	}
 
-	public void renameItem(){
-		Log.d("abh", "oldname: "+oldName+" newName: "+name+" sceneToRename:"+item.getName());
-
-		if (!item.getName().equals(name)) {
-			if (sceneController.rename(item, name)) {
-				Project currentProject = projectManager.getCurrentProject();
-				XstreamSerializer.getInstance().saveProject(currentProject);
-				loadProject(currentProject.getDirectory(),
-						sceneListFragment.getActivity().getApplicationContext());
-				sceneListFragment.initializeAdapter();
-			} else {
-				ToastUtil.showError(sceneListFragment.getActivity(), R.string.error_rename_scene);
-			}
-		}
-		sceneListFragment.finishActionMode();
-	}
-	public void renameItem(Scene item, String name){
-
-		if (!item.getName().equals(name)) {
+//	public void renameItem(Scene item, String name){
+//		if (!item.getName().equals(name)) {
+//			if (sceneController.rename(item, name)) {
+//				Project currentProject = projectManager.getCurrentProject();
+//				XstreamSerializer.getInstance().saveProject(currentProject);
+//				loadProject(currentProject.getDirectory(),
+//						sceneListFragment.getActivity().getApplicationContext());
+//				sceneListFragment.initializeAdapter();
+//			} else {
+//				ToastUtil.showError(sceneListFragment.getActivity(), R.string.error_rename_scene);
+//			}
+//		}
+//		sceneListFragment.finishActionMode();
+//	}
+	public void renameItem(String oldName, String newName){
+		//after undo execute command
+		if (!oldName.equals(newName)) {
 			Scene sceneToRename =
-					projectManager.getCurrentProject().getSceneWithName(item.getName());
-			if (sceneController.rename(sceneToRename, name)) {
+					projectManager.getCurrentProject().getSceneWithName(oldName);
+			if (sceneController.rename(sceneToRename, newName)) {
 				Project currentProject = projectManager.getCurrentProject();
 				XstreamSerializer.getInstance().saveProject(currentProject);
 				loadProject(currentProject.getDirectory(),
@@ -87,12 +85,16 @@ public class RenameCommand implements Command {
 				ToastUtil.showError(sceneListFragment.getActivity(), R.string.error_rename_scene);
 			}
 		}
+	}
 
+	@Override
+	public void execute() {
+		renameItem(oldName,name);
 	}
 
 	@Override
 	public void unExecute() {
-		renameItem(item,oldName);
+		renameItem(name,oldName);
 	}
 
 	public RenameCommand getCommand(){
