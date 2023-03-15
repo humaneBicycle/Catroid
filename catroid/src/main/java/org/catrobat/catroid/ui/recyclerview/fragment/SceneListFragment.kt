@@ -294,7 +294,6 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     }
 
     private fun handleUndo(undoMenuItem : MenuItem){
-        ToastUtil.showSuccess(context,"undo click")
         commandManager.undo()
     }
     private fun handleRedo(undoMenuItem : MenuItem){
@@ -305,10 +304,8 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         undoButton.setEnabled(isUndoAvailable)
         if(isUndoAvailable){
             undoButton.icon.alpha=255
-
         }else{
             undoButton.icon.alpha=130
-
         }
     }
 
@@ -316,10 +313,10 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         redoButton.setEnabled(isRedoAvailable)
         if(isRedoAvailable){
             redoButton.icon.alpha=255
-
         }else{
             redoButton.icon.alpha=130
-
         }
     }
 }
+
+

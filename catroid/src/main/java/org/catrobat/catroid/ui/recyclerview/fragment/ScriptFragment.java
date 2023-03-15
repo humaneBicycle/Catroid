@@ -325,9 +325,6 @@ public class ScriptFragment extends ListFragment implements
 		});
 
 		setHasOptionsMenu(true);
-
-		ToastUtil.showSuccess(getActivity(), "ScriptFrag");
-
 		return view;
 	}
 

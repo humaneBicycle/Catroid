@@ -22,10 +22,8 @@
  */
 package org.catrobat.catroid.content;
 
-import com.google.gson.Gson;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Nameable;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -39,7 +37,6 @@ import org.catrobat.catroid.utils.FileMetaDataExtractor;
 
 import java.io.File;
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -254,34 +251,5 @@ public class Scene implements Nameable, Serializable {
 		}
 
 		return true;
-	}
-
-
-	public SceneMomento takeSceneSnapshot(){
-		return new SceneMomento(this);
-	}
-
-	public void restore(SceneMomento momento){
-		this.name = momento.getName();
-	}
-
-	public static class SceneMomento{
-		private final String name;
-		Scene scene;
-
-		SceneMomento(Scene scene){
-			this.name=scene.getName();
-			this.scene=scene;
-		}
-
-		public String getName(){
-			return name;
-		}
-		public Scene getScene(){
-			return scene;
-		}
-
-
-
 	}
 }

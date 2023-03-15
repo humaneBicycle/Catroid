@@ -56,20 +56,6 @@ public class RenameCommand implements Command {
 
 	}
 
-//	public void renameItem(Scene item, String name){
-//		if (!item.getName().equals(name)) {
-//			if (sceneController.rename(item, name)) {
-//				Project currentProject = projectManager.getCurrentProject();
-//				XstreamSerializer.getInstance().saveProject(currentProject);
-//				loadProject(currentProject.getDirectory(),
-//						sceneListFragment.getActivity().getApplicationContext());
-//				sceneListFragment.initializeAdapter();
-//			} else {
-//				ToastUtil.showError(sceneListFragment.getActivity(), R.string.error_rename_scene);
-//			}
-//		}
-//		sceneListFragment.finishActionMode();
-//	}
 	public void renameItem(String oldName, String newName){
 		//after undo execute command
 		if (!oldName.equals(newName)) {

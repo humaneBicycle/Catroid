@@ -66,9 +66,6 @@ class LookListFragment : RecyclerViewFragment<LookData?>() {
         adapter = LookAdapter(items)
         emptyView.setText(R.string.fragment_look_text_description)
         onAdapterReady()
-
-        ToastUtil.showSuccess(activity, "LookListFrag")
-
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {

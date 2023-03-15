@@ -90,7 +90,6 @@ public class SceneController {
 				}
 			}
 		}
-		Log.d("abh", "rename: "+renamed);
 
 		return renamed;
 	}
