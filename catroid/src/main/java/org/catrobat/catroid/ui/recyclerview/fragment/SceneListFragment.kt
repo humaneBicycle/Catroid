@@ -221,14 +221,16 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
 
     override fun getRenameDialogHint() = R.string.scene_name_label
     override fun renameItem(item: Scene?, name: String) {
-        val command = RenameCommand(
-            this,
-            sceneController,
-            item,
-            name,
-            projectManager
-        )
-        commandManager.executeCommand(command)
+        val command = item?.let {
+            RenameCommand(
+                this,
+                sceneController,
+                it,
+                name,
+                projectManager
+            )
+        }
+        command?.let { commandManager.executeCommand(it) }
     }
 
     override fun onItemClick(item: Scene?, selectionManager: MultiSelectionManager?) {

@@ -20,10 +20,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.catrobat.catroid.ui.command
 
-package org.catrobat.catroid.ui.command;
-
-public interface UndoRedoListener {
-	void isUndoAvailable(boolean isUndoAvailable);
-	void isRedoAvailable(boolean isRedoAvailable);
+interface UndoRedoListener {
+    fun isUndoAvailable(isUndoAvailable: Boolean)
+    fun isRedoAvailable(isRedoAvailable: Boolean)
 }
