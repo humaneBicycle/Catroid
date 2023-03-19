@@ -31,7 +31,7 @@ import org.catrobat.catroid.ui.recyclerview.controller.SceneController
 import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment
 import org.catrobat.catroid.utils.ToastUtil
 
-class RenameCommand(
+class RenameSceneCommand(
     var sceneListFragment: SceneListFragment, var sceneController: SceneController,
     var item: Scene, var name: String, var projectManager: ProjectManager
 ) : Command {
@@ -50,7 +50,7 @@ class RenameCommand(
                 XstreamSerializer.getInstance().saveProject(currentProject)
                 loadProject(
                     currentProject.directory,
-                    sceneListFragment.activity!!.applicationContext
+                    sceneListFragment.requireActivity().applicationContext
                 )
                 sceneListFragment.initializeAdapter()
             } else {
@@ -63,10 +63,14 @@ class RenameCommand(
         renameItem(oldName, name)
     }
 
-    override fun unExecute() {
+    override fun undo() {
         renameItem(name, oldName)
     }
 
-    val command: RenameCommand
+    override fun redo(){
+        renameItem(oldName, name)
+    }
+
+    val command: RenameSceneCommand
         get() = this
 }

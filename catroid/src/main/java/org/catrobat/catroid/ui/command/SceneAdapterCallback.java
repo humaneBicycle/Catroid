@@ -20,10 +20,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.ui.command
 
-interface Command {
-    fun execute()
-    fun undo()
-    fun redo()
+package org.catrobat.catroid.ui.command;
+
+import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter;
+
+public interface SceneAdapterCallback {
+	SceneAdapter setSceneAdapterForMoveSceneCommand();
 }

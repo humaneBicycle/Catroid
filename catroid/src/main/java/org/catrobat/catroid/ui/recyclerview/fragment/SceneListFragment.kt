@@ -38,8 +38,11 @@ import org.catrobat.catroid.content.Scene
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
 import org.catrobat.catroid.ui.UiUtils
+import org.catrobat.catroid.ui.command.Command
 import org.catrobat.catroid.ui.command.CommandManager
-import org.catrobat.catroid.ui.command.RenameCommand
+import org.catrobat.catroid.ui.command.MoveSceneCommand
+import org.catrobat.catroid.ui.command.RenameSceneCommand
+import org.catrobat.catroid.ui.command.SceneAdapterCallback
 import org.catrobat.catroid.ui.command.UndoRedoListener
 import org.catrobat.catroid.ui.controller.BackpackListManager
 import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter
@@ -51,13 +54,14 @@ import org.koin.android.ext.android.inject
 import java.io.IOException
 
 class SceneListFragment : RecyclerViewFragment<Scene?>(),
-    ProjectLoadListener, UndoRedoListener {
+    ProjectLoadListener, UndoRedoListener, SceneAdapterCallback {
 
     private val sceneController = SceneController()
     private val projectManager: ProjectManager by inject()
     private val commandManager:CommandManager=CommandManager()
 
-
+    var isUndo=false
+    var isRedo=false
     lateinit var undoButton : MenuItem
     lateinit var redoButton : MenuItem
 
@@ -71,6 +75,28 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         projectManager.currentlyEditedScene = currentProject.defaultScene
         (requireActivity() as AppCompatActivity).supportActionBar?.title = currentProject.name
         commandManager.addUndoListener(this)
+
+        (adapter as SceneAdapter).setOnItemMoveListener { sourcePosition, targetPosition ->
+            Log.d(TAG, "scene item moved")
+            val command: Command = MoveSceneCommand(
+                    this@SceneListFragment, sourcePosition,
+                    targetPosition
+                )
+            if(isUndo) {
+                Log.d(TAG, "onResume: undo scenefrag")
+                isUndo=false
+                commandManager.undo()
+            }else if(isRedo){
+                Log.d(TAG, "onResume: redo scenefrag")
+                isRedo=false
+                commandManager.redo()
+            }else{
+                Log.d(TAG, "onResume: execute scenefrag")
+
+                commandManager.executeCommand(command)
+
+            }
+        }
     }
 
     private fun switchToSpriteListFragment() {
@@ -99,10 +125,10 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.undo_project_button->{
-                handleUndo(item)
+                handleUndo()
             }
             R.id.redo_project_button->{
-                handleRedo(item)
+                handleRedo()
             }
             else -> return super.onOptionsItemSelected(item)
         }
@@ -222,7 +248,7 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     override fun getRenameDialogHint() = R.string.scene_name_label
     override fun renameItem(item: Scene?, name: String) {
         val command = item?.let {
-            RenameCommand(
+            RenameSceneCommand(
                 this,
                 sceneController,
                 it,
@@ -295,15 +321,17 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         val TAG: String = SceneListFragment::class.java.simpleName
     }
 
-    private fun handleUndo(undoMenuItem : MenuItem){
+    private fun handleUndo(){
+        isUndo=true
         commandManager.undo()
     }
-    private fun handleRedo(undoMenuItem : MenuItem){
+    private fun handleRedo(){
+        isRedo=true
         commandManager.redo()
     }
 
     override fun isUndoAvailable(isUndoAvailable: Boolean) {
-        undoButton.setEnabled(isUndoAvailable)
+        undoButton.isEnabled = isUndoAvailable
         if(isUndoAvailable){
             undoButton.icon.alpha=255
         }else{
@@ -312,12 +340,17 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     }
 
     override fun isRedoAvailable(isRedoAvailable: Boolean) {
-        redoButton.setEnabled(isRedoAvailable)
+        redoButton.isEnabled = isRedoAvailable
         if(isRedoAvailable){
             redoButton.icon.alpha=255
         }else{
             redoButton.icon.alpha=130
         }
+    }
+
+    override fun setSceneAdapterForMoveSceneCommand(): SceneAdapter {
+        Log.d(TAG, "setSceneAdapterForMoveSceneCommand: requested adapter from scenelist")
+        return adapter as SceneAdapter
     }
 }
 

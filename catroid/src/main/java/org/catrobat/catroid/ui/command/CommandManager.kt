@@ -35,14 +35,14 @@ class CommandManager {
     }
 
     fun undo() {
-        if (undoList.size > 0) {
+        if (!undoList.isEmpty()) {
             val commandToRedo = undoList.peek()
-            commandToRedo.unExecute()
+            commandToRedo.undo()
             redoList.add(commandToRedo)
             undoList.pop()
         }
         if (undoRedoListener != null) {
-            if (undoList.size == 0) {
+            if (undoList.isEmpty()) {
                 undoRedoListener!!.isUndoAvailable(false)
             }
             undoRedoListener!!.isRedoAvailable(true)
@@ -50,14 +50,14 @@ class CommandManager {
     }
 
     fun redo() {
-        if (redoList.size > 0) {
+        if (!redoList.isEmpty()) {
             val command = redoList.peek()
-            command.execute()
+            command.redo()
             undoList.add(command)
             redoList.pop()
         }
         if (undoRedoListener != null) {
-            if (redoList.size == 0) {
+            if (redoList.isEmpty()) {
                 undoRedoListener!!.isRedoAvailable(false)
             }
             undoRedoListener!!.isUndoAvailable(true)

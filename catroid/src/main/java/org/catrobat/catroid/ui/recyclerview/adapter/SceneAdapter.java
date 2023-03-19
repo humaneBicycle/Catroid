@@ -30,6 +30,10 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Scene;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.ProjectAndSceneScreenshotLoader;
+import org.catrobat.catroid.ui.command.Command;
+import org.catrobat.catroid.ui.command.MoveSceneCommand;
+import org.catrobat.catroid.ui.command.OnItemMoveListener;
+import org.catrobat.catroid.ui.command.SceneAdapterCallback;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ExtendedViewHolder;
 
 import java.io.File;
@@ -38,6 +42,7 @@ import java.util.Locale;
 
 public class SceneAdapter extends ExtendedRVAdapter<Scene> {
 
+	OnItemMoveListener onItemMoveListener;
 	public SceneAdapter(List<Scene> items) {
 		super(items);
 	}
@@ -70,6 +75,9 @@ public class SceneAdapter extends ExtendedRVAdapter<Scene> {
 	public boolean onItemMove(int sourcePosition, int targetPosition) {
 		boolean moved = super.onItemMove(sourcePosition, targetPosition);
 		ProjectManager.getInstance().setCurrentlyEditedScene(items.get(0));
+		if(onItemMoveListener!=null){
+			onItemMoveListener.notifyItemMoved(sourcePosition,targetPosition);
+		}
 		return moved;
 	}
 
@@ -87,5 +95,8 @@ public class SceneAdapter extends ExtendedRVAdapter<Scene> {
 			soundCount += sprite.getSoundList().size();
 		}
 		return soundCount;
+	}
+	public void setOnItemMoveListener(OnItemMoveListener onItemMoveListener){
+		this.onItemMoveListener=onItemMoveListener;
 	}
 }
