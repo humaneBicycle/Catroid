@@ -30,10 +30,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Scene;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.ProjectAndSceneScreenshotLoader;
-import org.catrobat.catroid.ui.command.Command;
-import org.catrobat.catroid.ui.command.MoveSceneCommand;
 import org.catrobat.catroid.ui.command.OnItemMoveListener;
-import org.catrobat.catroid.ui.command.SceneAdapterCallback;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ExtendedViewHolder;
 
 import java.io.File;

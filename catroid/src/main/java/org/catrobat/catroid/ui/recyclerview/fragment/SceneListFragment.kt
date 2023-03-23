@@ -38,11 +38,10 @@ import org.catrobat.catroid.content.Scene
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
 import org.catrobat.catroid.ui.UiUtils
-import org.catrobat.catroid.ui.command.Command
+import org.catrobat.catroid.ui.command.implementation.Command
 import org.catrobat.catroid.ui.command.CommandManager
-import org.catrobat.catroid.ui.command.MoveSceneCommand
-import org.catrobat.catroid.ui.command.RenameSceneCommand
-import org.catrobat.catroid.ui.command.SceneAdapterCallback
+import org.catrobat.catroid.ui.command.implementation.MoveSceneCommand
+import org.catrobat.catroid.ui.command.implementation.RenameSceneCommand
 import org.catrobat.catroid.ui.command.UndoRedoListener
 import org.catrobat.catroid.ui.controller.BackpackListManager
 import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter
@@ -52,9 +51,12 @@ import org.catrobat.catroid.ui.recyclerview.controller.SceneController
 import org.catrobat.catroid.utils.ToastUtil
 import org.koin.android.ext.android.inject
 import java.io.IOException
+import com.thoughtworks.xstream.XStream
+import org.catrobat.catroid.ui.command.callback.SceneListCommandCallback
 
 class SceneListFragment : RecyclerViewFragment<Scene?>(),
-    ProjectLoadListener, UndoRedoListener, SceneAdapterCallback {
+    ProjectLoadListener, UndoRedoListener,
+    SceneListCommandCallback {
 
     private val sceneController = SceneController()
     private val projectManager: ProjectManager by inject()
@@ -74,29 +76,37 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         }
         projectManager.currentlyEditedScene = currentProject.defaultScene
         (requireActivity() as AppCompatActivity).supportActionBar?.title = currentProject.name
+
         commandManager.addUndoListener(this)
 
         (adapter as SceneAdapter).setOnItemMoveListener { sourcePosition, targetPosition ->
             Log.d(TAG, "scene item moved")
-            val command: Command = MoveSceneCommand(
-                    this@SceneListFragment, sourcePosition,
+            val command: Command =
+                MoveSceneCommand(
+                    sourcePosition,
                     targetPosition
                 )
             if(isUndo) {
                 Log.d(TAG, "onResume: undo scenefrag")
                 isUndo=false
-                commandManager.undo()
+                commandManager.undo(this)
             }else if(isRedo){
                 Log.d(TAG, "onResume: redo scenefrag")
                 isRedo=false
-                commandManager.redo()
+                commandManager.redo(this)
             }else{
                 Log.d(TAG, "onResume: execute scenefrag")
 
-                commandManager.executeCommand(command)
+                commandManager.executeCommand(command,this)
 
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val stack = XStream().toXML(commandManager.undoList)
+        Log.d(TAG, "onPause: stack is:"+stack)
     }
 
     private fun switchToSpriteListFragment() {
@@ -249,14 +259,16 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     override fun renameItem(item: Scene?, name: String) {
         val command = item?.let {
             RenameSceneCommand(
-                this,
-                sceneController,
-                it,
-                name,
-                projectManager
+                it.name,
+                name
             )
         }
-        command?.let { commandManager.executeCommand(it) }
+        command?.let {
+            commandManager.executeCommand(
+                it,
+                this
+            )
+        }
     }
 
     override fun onItemClick(item: Scene?, selectionManager: MultiSelectionManager?) {
@@ -323,11 +335,11 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
 
     private fun handleUndo(){
         isUndo=true
-        commandManager.undo()
+        commandManager.undo(this)
     }
     private fun handleRedo(){
         isRedo=true
-        commandManager.redo()
+        commandManager.redo(this)
     }
 
     override fun isUndoAvailable(isUndoAvailable: Boolean) {
@@ -348,10 +360,19 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         }
     }
 
-    override fun setSceneAdapterForMoveSceneCommand(): SceneAdapter {
-        Log.d(TAG, "setSceneAdapterForMoveSceneCommand: requested adapter from scenelist")
+    override fun setSceneListFragment(): SceneListFragment {
+        return this
+    }
+
+    override fun setProjectListFragment(): ProjectManager {
+        return projectManager
+    }
+
+    override fun setSceneAdapter(): SceneAdapter {
         return adapter as SceneAdapter
     }
+
+    override fun setSceneController(): SceneController {
+        return sceneController
+    }
 }
-
-

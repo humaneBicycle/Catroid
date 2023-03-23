@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui.command
 
+import org.catrobat.catroid.ui.command.implementation.Command
+import org.catrobat.catroid.ui.command.callback.Callback
 import java.util.Stack
 
 class CommandManager {
@@ -34,12 +36,48 @@ class CommandManager {
         redoList = Stack()
     }
 
-    fun undo() {
+    fun undo(callback: Callback) {
         if (!undoList.isEmpty()) {
             val commandToRedo = undoList.peek()
-            commandToRedo.undo()
+            commandToRedo.undo(callback)
             redoList.add(commandToRedo)
             undoList.pop()
+        }
+        notifyUndoRedoButtons()
+    }
+
+    fun redo(callback: Callback) {
+        if (!redoList.isEmpty()) {
+            val command = redoList.peek()
+            command.redo(callback)
+            undoList.add(command)
+            redoList.pop()
+        }
+        notifyUndoRedoButtons()
+    }
+
+    fun addUndoListener(undoListener: UndoRedoListener?) {
+        undoRedoListener = undoListener
+    }
+
+    fun executeCommand(command: Command, callback: Callback) {
+        command.execute(callback)
+        undoList.add(command)
+        redoList.clear()
+        if (undoRedoListener != null) {
+            undoRedoListener!!.isUndoAvailable(true)
+        }
+    }
+    fun executeWithoutUndo(command:Command, callback: Callback){
+        command.execute(callback)
+    }
+
+    fun notifyUndoRedoButtons(){
+        if (undoRedoListener != null) {
+            if (redoList.isEmpty()) {
+                undoRedoListener!!.isRedoAvailable(false)
+            }
+            undoRedoListener!!.isUndoAvailable(true)
         }
         if (undoRedoListener != null) {
             if (undoList.isEmpty()) {
@@ -49,31 +87,10 @@ class CommandManager {
         }
     }
 
-    fun redo() {
-        if (!redoList.isEmpty()) {
-            val command = redoList.peek()
-            command.redo()
-            undoList.add(command)
-            redoList.pop()
-        }
-        if (undoRedoListener != null) {
-            if (redoList.isEmpty()) {
-                undoRedoListener!!.isRedoAvailable(false)
-            }
-            undoRedoListener!!.isUndoAvailable(true)
-        }
+    fun setUndoStack(commands:Stack<Command>){
+        this.undoList=commands
     }
-
-    fun addUndoListener(undoListener: UndoRedoListener?) {
-        undoRedoListener = undoListener
-    }
-
-    fun executeCommand(command: Command) {
-        command.execute()
-        undoList.add(command)
-        redoList.clear()
-        if (undoRedoListener != null) {
-            undoRedoListener!!.isUndoAvailable(true)
-        }
+    fun getRedoStack():Stack<Command>{
+        return undoList
     }
 }

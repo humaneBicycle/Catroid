@@ -21,31 +21,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.catrobat.catroid.ui.command;
+package org.catrobat.catroid.ui.command.callback;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter;
+import org.catrobat.catroid.ui.recyclerview.controller.SceneController;
+import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment;
 
-public class MoveSceneCommand implements Command{
-
-	int sourcePosition, targetPosition;
-	SceneAdapter adapter;
-	public MoveSceneCommand(SceneAdapterCallback callback,int sourcePosition, int targetPosition){
-		this.sourcePosition=sourcePosition;
-		this.targetPosition=targetPosition;
-		adapter=callback.setSceneAdapterForMoveSceneCommand();
-
-	}
-	@Override
-	public void execute() {
-
-	}
-	@Override
-	public void redo() {
-		adapter.onItemMove(sourcePosition,targetPosition);
-	}
-
-	@Override
-	public void undo() {
-		adapter.onItemMove(targetPosition,sourcePosition);
-	}
+public interface SceneListCommandCallback extends Callback {
+	SceneListFragment setSceneListFragment();
+	ProjectManager setProjectListFragment();
+	SceneAdapter setSceneAdapter();
+	SceneController setSceneController();
 }
