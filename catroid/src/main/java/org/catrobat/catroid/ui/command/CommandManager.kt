@@ -22,8 +22,10 @@
  */
 package org.catrobat.catroid.ui.command
 
+import android.util.Log
 import org.catrobat.catroid.ui.command.implementation.Command
-import org.catrobat.catroid.ui.command.callback.Callback
+import org.catrobat.catroid.ui.command.provider.Provider
+import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment
 import java.util.Stack
 
 class CommandManager {
@@ -36,22 +38,20 @@ class CommandManager {
         redoList = Stack()
     }
 
-    fun undo(callback: Callback) {
+    fun undo(provider: Provider) {
         if (!undoList.isEmpty()) {
-            val commandToRedo = undoList.peek()
-            commandToRedo.undo(callback)
+            val commandToRedo = undoList.pop()
+            commandToRedo.undo(provider)
             redoList.add(commandToRedo)
-            undoList.pop()
         }
         notifyUndoRedoButtons()
     }
 
-    fun redo(callback: Callback) {
+    fun redo(provider: Provider) {
         if (!redoList.isEmpty()) {
-            val command = redoList.peek()
-            command.redo(callback)
+            val command = redoList.pop()
+            command.redo(provider)
             undoList.add(command)
-            redoList.pop()
         }
         notifyUndoRedoButtons()
     }
@@ -60,31 +60,32 @@ class CommandManager {
         undoRedoListener = undoListener
     }
 
-    fun executeCommand(command: Command, callback: Callback) {
-        command.execute(callback)
+    fun executeCommand(command: Command, provider: Provider) {
+        command.execute(provider)
         undoList.add(command)
         redoList.clear()
-        if (undoRedoListener != null) {
-            undoRedoListener!!.isUndoAvailable(true)
-        }
+        notifyUndoRedoButtons()
     }
-    fun executeWithoutUndo(command:Command, callback: Callback){
-        command.execute(callback)
+    fun executeWithoutUndo(command:Command, provider: Provider){
+        command.execute(provider)
     }
 
     fun notifyUndoRedoButtons(){
         if (undoRedoListener != null) {
             if (redoList.isEmpty()) {
                 undoRedoListener!!.isRedoAvailable(false)
+            }else{
+                undoRedoListener!!.isRedoAvailable(true)
             }
-            undoRedoListener!!.isUndoAvailable(true)
-        }
-        if (undoRedoListener != null) {
             if (undoList.isEmpty()) {
                 undoRedoListener!!.isUndoAvailable(false)
+            }else{
+                undoRedoListener!!.isUndoAvailable(true)
             }
-            undoRedoListener!!.isRedoAvailable(true)
         }
+
+        Log.d(SceneListFragment.TAG, "undo stack: "+undoList.size+" redo stack:" +redoList.size )
+
     }
 
     fun setUndoStack(commands:Stack<Command>){
@@ -92,5 +93,10 @@ class CommandManager {
     }
     fun getRedoStack():Stack<Command>{
         return undoList
+    }
+    interface onCommandCompleteCallback{
+        fun onComplete()
+        fun onSuccess()
+        fun onFailure()
     }
 }

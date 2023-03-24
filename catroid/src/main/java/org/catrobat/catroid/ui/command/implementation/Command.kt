@@ -22,10 +22,10 @@
  */
 package org.catrobat.catroid.ui.command.implementation
 
-import org.catrobat.catroid.ui.command.callback.Callback
+import org.catrobat.catroid.ui.command.provider.Provider
 
 interface Command {
-    fun execute(mediator: Callback)
-    fun undo(mediator: Callback)
-    fun redo(mediator: Callback)
+    fun execute(mediator: Provider)
+    fun undo(mediator: Provider)
+    fun redo(mediator: Provider)
 }

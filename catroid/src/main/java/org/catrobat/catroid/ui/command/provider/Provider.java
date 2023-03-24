@@ -21,8 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.catrobat.catroid.ui.command.callback;
+package org.catrobat.catroid.ui.command.provider;
 
-public interface Callback {
+public interface Provider {
 
 }

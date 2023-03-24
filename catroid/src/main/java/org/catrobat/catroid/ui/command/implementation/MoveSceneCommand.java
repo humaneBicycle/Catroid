@@ -23,8 +23,8 @@
 
 package org.catrobat.catroid.ui.command.implementation;
 
-import org.catrobat.catroid.ui.command.callback.Callback;
-import org.catrobat.catroid.ui.command.callback.SceneListCommandCallback;
+import org.catrobat.catroid.ui.command.provider.Provider;
+import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider;
 import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter;
 
 public class MoveSceneCommand implements Command {
@@ -37,18 +37,18 @@ public class MoveSceneCommand implements Command {
 
 	}
 	@Override
-	public void execute(Callback mediator) {
-
+	public void execute(Provider provider) {
+		//empty because execution is dealt by fragment itself
 	}
 	@Override
-	public void redo(Callback mediator) {
-		SceneAdapter adapter = ((SceneListCommandCallback)mediator).setSceneAdapter();
+	public void redo(Provider provider) {
+		SceneAdapter adapter = ((SceneSceneCommandProvider)provider).setSceneAdapter();
 		adapter.onItemMove(sourcePosition,targetPosition);
 	}
 
 	@Override
-	public void undo(Callback mediator) {
-		SceneAdapter adapter = ((SceneListCommandCallback)mediator).setSceneAdapter();
+	public void undo(Provider provider) {
+		SceneAdapter adapter = ((SceneSceneCommandProvider)provider).setSceneAdapter();
 		adapter.onItemMove(targetPosition,sourcePosition);
 	}
 }

@@ -26,8 +26,8 @@ import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.io.XstreamSerializer
 import org.catrobat.catroid.io.asynctask.loadProject
-import org.catrobat.catroid.ui.command.callback.Callback
-import org.catrobat.catroid.ui.command.callback.SceneListCommandCallback
+import org.catrobat.catroid.ui.command.provider.Provider
+import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider
 import org.catrobat.catroid.ui.recyclerview.controller.SceneController
 import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment
 import org.catrobat.catroid.utils.ToastUtil
@@ -36,24 +36,24 @@ class RenameSceneCommand(
     var previousName: String, var name: String
 ) : Command {
 
-    override fun execute(mediator: Callback) {
-        val sceneListFragment = (mediator as SceneListCommandCallback).setSceneListFragment()
-        val sceneController= mediator.setSceneController()
-        val projectManager= mediator.setProjectListFragment()
+    override fun execute(provider: Provider) {
+        val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
+        val sceneController= provider.setSceneController()
+        val projectManager= provider.setProjectListFragment()
         renameItem(previousName, name,sceneListFragment,sceneController,projectManager)
     }
 
-    override fun undo(mediator: Callback) {
-        val sceneListFragment = (mediator as SceneListCommandCallback).setSceneListFragment()
-        val sceneController= mediator.setSceneController()
-        val projectManager= mediator.setProjectListFragment()
+    override fun undo(provider: Provider) {
+        val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
+        val sceneController= provider.setSceneController()
+        val projectManager= provider.setProjectListFragment()
         renameItem(name, previousName,sceneListFragment,sceneController,projectManager)
     }
 
-    override fun redo(mediator: Callback){
-        val sceneListFragment = (mediator as SceneListCommandCallback).setSceneListFragment()
-        val sceneController= mediator.setSceneController()
-        val projectManager= mediator.setProjectListFragment()
+    override fun redo(provider: Provider){
+        val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
+        val sceneController= provider.setSceneController()
+        val projectManager= provider.setProjectListFragment()
         renameItem(previousName, name,sceneListFragment,sceneController,projectManager)
     }
 

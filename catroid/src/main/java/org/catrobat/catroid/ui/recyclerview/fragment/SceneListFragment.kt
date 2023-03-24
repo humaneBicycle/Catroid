@@ -52,18 +52,17 @@ import org.catrobat.catroid.utils.ToastUtil
 import org.koin.android.ext.android.inject
 import java.io.IOException
 import com.thoughtworks.xstream.XStream
-import org.catrobat.catroid.ui.command.callback.SceneListCommandCallback
+import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider
 
 class SceneListFragment : RecyclerViewFragment<Scene?>(),
     ProjectLoadListener, UndoRedoListener,
-    SceneListCommandCallback {
+    SceneSceneCommandProvider {
 
     private val sceneController = SceneController()
     private val projectManager: ProjectManager by inject()
     private val commandManager:CommandManager=CommandManager()
 
-    var isUndo=false
-    var isRedo=false
+    var isReduntantCall=false
     lateinit var undoButton : MenuItem
     lateinit var redoButton : MenuItem
 
@@ -78,27 +77,16 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         (requireActivity() as AppCompatActivity).supportActionBar?.title = currentProject.name
 
         commandManager.addUndoListener(this)
-
         (adapter as SceneAdapter).setOnItemMoveListener { sourcePosition, targetPosition ->
-            Log.d(TAG, "scene item moved")
-            val command: Command =
-                MoveSceneCommand(
-                    sourcePosition,
-                    targetPosition
-                )
-            if(isUndo) {
-                Log.d(TAG, "onResume: undo scenefrag")
-                isUndo=false
-                commandManager.undo(this)
-            }else if(isRedo){
-                Log.d(TAG, "onResume: redo scenefrag")
-                isRedo=false
-                commandManager.redo(this)
+            if(!isReduntantCall) {
+                val command: Command =
+                        MoveSceneCommand(
+                            sourcePosition,
+                            targetPosition
+                        )
+                commandManager.executeCommand(command, this)
             }else{
-                Log.d(TAG, "onResume: execute scenefrag")
-
-                commandManager.executeCommand(command,this)
-
+                isReduntantCall=false
             }
         }
     }
@@ -106,7 +94,7 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     override fun onPause() {
         super.onPause()
         val stack = XStream().toXML(commandManager.undoList)
-        Log.d(TAG, "onPause: stack is:"+stack)
+        Log.d(TAG, "abh"+XStream().toXML(commandManager.undoList))
     }
 
     private fun switchToSpriteListFragment() {
@@ -334,11 +322,11 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     }
 
     private fun handleUndo(){
-        isUndo=true
+        isReduntantCall=true
         commandManager.undo(this)
     }
     private fun handleRedo(){
-        isRedo=true
+        isReduntantCall=true
         commandManager.redo(this)
     }
 
