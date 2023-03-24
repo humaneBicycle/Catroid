@@ -25,7 +25,7 @@ package org.catrobat.catroid.ui.command
 import org.catrobat.catroid.ui.command.provider.Provider
 
 interface Command {
-    fun execute(mediator: Provider)
-    fun undo(mediator: Provider)
-    fun redo(mediator: Provider)
+    fun execute(provider: Provider)
+    fun undo(provider: Provider)
+    fun redo(provider: Provider)
 }
