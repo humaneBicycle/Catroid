@@ -26,8 +26,9 @@ import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.io.XstreamSerializer
 import org.catrobat.catroid.io.asynctask.loadProject
+import org.catrobat.catroid.ui.command.Command
 import org.catrobat.catroid.ui.command.provider.Provider
-import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider
+import org.catrobat.catroid.ui.command.provider.SceneListFragmentCommandProvider
 import org.catrobat.catroid.ui.recyclerview.controller.SceneController
 import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment
 import org.catrobat.catroid.utils.ToastUtil
@@ -37,29 +38,25 @@ class RenameSceneCommand(
 ) : Command {
 
     override fun execute(provider: Provider) {
-        val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
+        val sceneListFragment = (provider as SceneListFragmentCommandProvider).setSceneListFragment()
         val sceneController= provider.setSceneController()
         val projectManager= provider.setProjectListFragment()
         renameItem(previousName, name,sceneListFragment!!,sceneController!!,projectManager!!)
     }
 
     override fun undo(provider: Provider) {
-        val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
+        val sceneListFragment = (provider as SceneListFragmentCommandProvider).setSceneListFragment()
         val sceneController= provider.setSceneController()
         val projectManager= provider.setProjectListFragment()
         renameItem(name, previousName,sceneListFragment!!,sceneController!!,projectManager!!)
     }
 
     override fun redo(provider: Provider){
-        val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
+        val sceneListFragment = (provider as SceneListFragmentCommandProvider).setSceneListFragment()
         val sceneController= provider.setSceneController()
         val projectManager= provider.setProjectListFragment()
         renameItem(previousName, name,sceneListFragment!!,sceneController!!,projectManager!!)
     }
-
-    val command: RenameSceneCommand
-        get() = this
-
 
     fun renameItem(oldName: String, newName: String,  sceneListFragment: SceneListFragment,
         sceneController: SceneController,projectManager:ProjectManager) {

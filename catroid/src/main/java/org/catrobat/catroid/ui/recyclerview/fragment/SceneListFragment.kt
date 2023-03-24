@@ -38,7 +38,7 @@ import org.catrobat.catroid.content.Scene
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
 import org.catrobat.catroid.ui.UiUtils
-import org.catrobat.catroid.ui.command.implementation.Command
+import org.catrobat.catroid.ui.command.Command
 import org.catrobat.catroid.ui.command.CommandManager
 import org.catrobat.catroid.ui.command.implementation.MoveSceneCommand
 import org.catrobat.catroid.ui.command.implementation.RenameSceneCommand
@@ -51,12 +51,11 @@ import org.catrobat.catroid.ui.recyclerview.controller.SceneController
 import org.catrobat.catroid.utils.ToastUtil
 import org.koin.android.ext.android.inject
 import java.io.IOException
-import com.thoughtworks.xstream.XStream
-import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider
+import org.catrobat.catroid.ui.command.provider.SceneListFragmentCommandProvider
 
 class SceneListFragment : RecyclerViewFragment<Scene?>(),
     ProjectLoadListener, UndoRedoListener,
-    SceneSceneCommandProvider {
+    SceneListFragmentCommandProvider {
 
     private val sceneController = SceneController()
     private val projectManager: ProjectManager by inject()

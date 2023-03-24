@@ -22,10 +22,7 @@
  */
 package org.catrobat.catroid.ui.command
 
-import android.util.Log
-import org.catrobat.catroid.ui.command.implementation.Command
 import org.catrobat.catroid.ui.command.provider.Provider
-import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment
 import java.util.Stack
 
 class CommandManager {
@@ -66,7 +63,7 @@ class CommandManager {
         redoList.clear()
         notifyUndoRedoButtons()
     }
-    fun executeWithoutUndo(command:Command, provider: Provider){
+    fun executeWithoutUndo(command: Command, provider: Provider){
         command.execute(provider)
     }
 
@@ -87,13 +84,5 @@ class CommandManager {
 
     fun setUndoStack(commands:Stack<Command>){
         this.undoList=commands
-    }
-    fun getRedoStack():Stack<Command>{
-        return undoList
-    }
-    interface onCommandCompleteCallback{
-        fun onComplete()
-        fun onSuccess()
-        fun onFailure()
     }
 }

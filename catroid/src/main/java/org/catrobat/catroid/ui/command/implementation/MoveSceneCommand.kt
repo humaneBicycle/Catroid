@@ -22,8 +22,9 @@
  */
 package org.catrobat.catroid.ui.command.implementation
 
+import org.catrobat.catroid.ui.command.Command
 import org.catrobat.catroid.ui.command.provider.Provider
-import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider
+import org.catrobat.catroid.ui.command.provider.SceneListFragmentCommandProvider
 
 class MoveSceneCommand(var sourcePosition: Int, var targetPosition: Int) : Command {
     override fun execute(provider: Provider) {
@@ -31,12 +32,12 @@ class MoveSceneCommand(var sourcePosition: Int, var targetPosition: Int) : Comma
     }
 
     override fun redo(provider: Provider) {
-        val adapter = (provider as SceneSceneCommandProvider).setSceneAdapter()
+        val adapter = (provider as SceneListFragmentCommandProvider).setSceneAdapter()
         adapter.onItemMove(sourcePosition, targetPosition)
     }
 
     override fun undo(provider: Provider) {
-        val adapter = (provider as SceneSceneCommandProvider).setSceneAdapter()
+        val adapter = (provider as SceneListFragmentCommandProvider).setSceneAdapter()
         adapter.onItemMove(targetPosition, sourcePosition)
     }
 }
