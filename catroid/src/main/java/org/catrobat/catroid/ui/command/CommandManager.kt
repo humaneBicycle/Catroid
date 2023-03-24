@@ -83,9 +83,6 @@ class CommandManager {
                 undoRedoListener!!.isUndoAvailable(true)
             }
         }
-
-        Log.d(SceneListFragment.TAG, "undo stack: "+undoList.size+" redo stack:" +redoList.size )
-
     }
 
     fun setUndoStack(commands:Stack<Command>){

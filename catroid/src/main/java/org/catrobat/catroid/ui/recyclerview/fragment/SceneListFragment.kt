@@ -77,24 +77,6 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         (requireActivity() as AppCompatActivity).supportActionBar?.title = currentProject.name
 
         commandManager.addUndoListener(this)
-        (adapter as SceneAdapter).setOnItemMoveListener { sourcePosition, targetPosition ->
-            if(!isReduntantCall) {
-                val command: Command =
-                        MoveSceneCommand(
-                            sourcePosition,
-                            targetPosition
-                        )
-                commandManager.executeCommand(command, this)
-            }else{
-                isReduntantCall=false
-            }
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val stack = XStream().toXML(commandManager.undoList)
-        Log.d(TAG, "abh"+XStream().toXML(commandManager.undoList))
     }
 
     private fun switchToSpriteListFragment() {
@@ -138,6 +120,18 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
         val items = projectManager.currentProject.sceneList
         adapter = SceneAdapter(items)
         onAdapterReady()
+        (adapter as SceneAdapter).setOnItemMoveListener { sourcePosition, targetPosition ->
+            if(!isReduntantCall) {
+                val command: Command =
+                    MoveSceneCommand(
+                        sourcePosition,
+                        targetPosition
+                    )
+                commandManager.executeCommand(command, this)
+            }else{
+                isReduntantCall=false
+            }
+        }
     }
 
     override fun packItems(selectedItems: List<Scene?>) {

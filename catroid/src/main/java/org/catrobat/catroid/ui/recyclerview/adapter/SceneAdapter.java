@@ -23,6 +23,7 @@
 
 package org.catrobat.catroid.ui.recyclerview.adapter;
 
+import android.util.Log;
 import android.view.View;
 
 import org.catrobat.catroid.ProjectManager;
@@ -32,6 +33,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.ProjectAndSceneScreenshotLoader;
 import org.catrobat.catroid.ui.command.OnItemMoveListener;
 import org.catrobat.catroid.ui.recyclerview.viewholder.ExtendedViewHolder;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
@@ -93,7 +95,7 @@ public class SceneAdapter extends ExtendedRVAdapter<Scene> {
 		}
 		return soundCount;
 	}
-	public void setOnItemMoveListener(OnItemMoveListener onItemMoveListener){
+	public void setOnItemMoveListener(@Nullable OnItemMoveListener onItemMoveListener) {
 		this.onItemMoveListener=onItemMoveListener;
 	}
 }

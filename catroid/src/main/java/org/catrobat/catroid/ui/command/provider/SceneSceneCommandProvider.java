@@ -20,23 +20,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.ui.command.implementation
 
-import org.catrobat.catroid.ui.command.provider.Provider
-import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider
+package org.catrobat.catroid.ui.command.provider;
 
-class MoveSceneCommand(var sourcePosition: Int, var targetPosition: Int) : Command {
-    override fun execute(provider: Provider) {
-        //empty because execution is dealt by fragment itself
-    }
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter;
+import org.catrobat.catroid.ui.recyclerview.controller.SceneController;
+import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment;
 
-    override fun redo(provider: Provider) {
-        val adapter = (provider as SceneSceneCommandProvider).setSceneAdapter()
-        adapter!!.onItemMove(sourcePosition, targetPosition)
-    }
-
-    override fun undo(provider: Provider) {
-        val adapter = (provider as SceneSceneCommandProvider).setSceneAdapter()
-        adapter!!.onItemMove(targetPosition, sourcePosition)
-    }
+public interface SceneSceneCommandProvider extends Provider {
+	SceneListFragment setSceneListFragment();
+	ProjectManager setProjectListFragment();
+	SceneAdapter setSceneAdapter();
+	SceneController setSceneController();
 }

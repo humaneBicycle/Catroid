@@ -40,21 +40,21 @@ class RenameSceneCommand(
         val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
         val sceneController= provider.setSceneController()
         val projectManager= provider.setProjectListFragment()
-        renameItem(previousName, name,sceneListFragment,sceneController,projectManager)
+        renameItem(previousName, name,sceneListFragment!!,sceneController!!,projectManager!!)
     }
 
     override fun undo(provider: Provider) {
         val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
         val sceneController= provider.setSceneController()
         val projectManager= provider.setProjectListFragment()
-        renameItem(name, previousName,sceneListFragment,sceneController,projectManager)
+        renameItem(name, previousName,sceneListFragment!!,sceneController!!,projectManager!!)
     }
 
     override fun redo(provider: Provider){
         val sceneListFragment = (provider as SceneSceneCommandProvider).setSceneListFragment()
         val sceneController= provider.setSceneController()
         val projectManager= provider.setProjectListFragment()
-        renameItem(previousName, name,sceneListFragment,sceneController,projectManager)
+        renameItem(previousName, name,sceneListFragment!!,sceneController!!,projectManager!!)
     }
 
     val command: RenameSceneCommand
