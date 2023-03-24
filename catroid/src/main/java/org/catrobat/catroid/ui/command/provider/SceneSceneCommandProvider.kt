@@ -20,35 +20,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.catrobat.catroid.ui.command.provider
 
-package org.catrobat.catroid.ui.command.implementation;
+import org.catrobat.catroid.ProjectManager
+import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter
+import org.catrobat.catroid.ui.recyclerview.controller.SceneController
+import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment
 
-import org.catrobat.catroid.ui.command.provider.Provider;
-import org.catrobat.catroid.ui.command.provider.SceneSceneCommandProvider;
-import org.catrobat.catroid.ui.recyclerview.adapter.SceneAdapter;
-
-public class MoveSceneCommand implements Command {
-
-	int sourcePosition, targetPosition;
-
-	public MoveSceneCommand(int sourcePosition, int targetPosition){
-		this.sourcePosition=sourcePosition;
-		this.targetPosition=targetPosition;
-
-	}
-	@Override
-	public void execute(Provider provider) {
-		//empty because execution is dealt by fragment itself
-	}
-	@Override
-	public void redo(Provider provider) {
-		SceneAdapter adapter = ((SceneSceneCommandProvider)provider).setSceneAdapter();
-		adapter.onItemMove(sourcePosition,targetPosition);
-	}
-
-	@Override
-	public void undo(Provider provider) {
-		SceneAdapter adapter = ((SceneSceneCommandProvider)provider).setSceneAdapter();
-		adapter.onItemMove(targetPosition,sourcePosition);
-	}
+interface SceneSceneCommandProvider : Provider {
+    fun setSceneListFragment(): SceneListFragment?
+    fun setProjectListFragment(): ProjectManager?
+    fun setSceneAdapter(): SceneAdapter?
+    fun setSceneController(): SceneController?
 }

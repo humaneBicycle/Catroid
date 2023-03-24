@@ -20,9 +20,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.catrobat.catroid.ui.command
 
-package org.catrobat.catroid.ui.command;
-
-public interface OnItemMoveListener {
-	void notifyItemMoved(int sourcePosition, int targetPosition);
+interface OnItemMoveListener {
+    fun notifyItemMoved(sourcePosition: Int, targetPosition: Int)
 }
